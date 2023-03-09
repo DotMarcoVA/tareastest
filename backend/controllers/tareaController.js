@@ -1,23 +1,32 @@
-const getTareas =  (req,res)=>{
-  res.status(200).json({mensaje: 'Mostrar tareas'})
-}
+const asycnHandler = require('express-async-handler');
+const Tarea = require('../models/tareaModel')
 
-const setTareas = (req,res)=>{
+const getTareas = asycnHandler(async (req,res)=>{
+  
+  const tareas = await Tarea.find()
+
+  res.status(200).json(tareas)
+})
+
+const setTareas = asycnHandler(async (req,res)=>{
   // console.log(req.body);
-  if(!req.body.nombre){
+  if(!req.body.texto){
     res.status(400)
     throw new Error('Favor de teclear una descripcion para una tarea')
   }
-  res.status(201).json({mensaje: 'Crear una tarea'})
-}
 
-const updateTareas = (req, res) => {
+  const tarea = await Tarea.create({texto: req.body.texto})
+
+  res.status(201).json(tarea)
+})
+
+const updateTareas = asycnHandler(async (req, res) => {
   res.status(200).json({mensaje: `Modificar una tarea ${req.params.id}`})
-}
+})
 
-const deleteTareas = (req,res)=>{
+const deleteTareas = asycnHandler(async (req,res)=>{
   res.status(200).json({mensaje: `Eliminando la tarea ${req.params.id}`})
-}
+})
 
 module.exports = {
   getTareas,
